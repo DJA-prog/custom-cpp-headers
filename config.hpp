@@ -1,3 +1,6 @@
+#ifndef config__HPP
+#define config__HPP
+
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -195,3 +198,5 @@ private:
         openConf();
     }
 };
+
+#endif

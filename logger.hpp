@@ -1,3 +1,6 @@
+#ifndef logger__HPP
+#define logger__HPP
+
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -100,3 +103,4 @@ class Logger{ // require: none
 
 };
 
+#endif

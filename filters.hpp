@@ -1,3 +1,6 @@
+#ifndef filters__HPP
+#define filters__HPP
+
 #include <cstring>
 #include <string>
 #include <algorithm>
@@ -191,6 +194,4 @@ std::string imgSrc(std::string htmlTag)
     return htmlTag.substr(htmlTag.find("src") + 5, (htmlTag.find('"',htmlTag.find("src") + 5)) - (htmlTag.find("src") + 5));
 }
 
-
-
-
+#endif

@@ -1,3 +1,6 @@
+#ifndef general__HPP
+#define general__HPP
+
 #include <string>
 #include <stdio.h>
 
@@ -46,7 +49,29 @@ std::string zeros(int value, int digits)
     return val;
 }
 
-int arraySize(auto &arr)
+std::string *split(std::string subject, char delimiter = ',')
+{
+    size_t n = std::count(subject.begin(), subject.end(), delimiter);
+    std::string values[n + 1];
+
+    int pos = 0;
+    for (size_t i = 0; i < n + 1; i++)
+    {
+        values[i] = subject.substr(pos, subject.find(delimiter, pos) - pos);
+        pos = subject.find(delimiter, pos) + 1;
+    }
+}
+
+int arraySize(std::string &arr)
 {
     return sizeof(arr) / sizeof(arr[0]);
 }
+
+// Comment out for C++ 11
+
+// int arraySize(int (&arr))
+// {
+//     return sizeof(arr) / sizeof(arr[0]);
+// }
+
+#endif

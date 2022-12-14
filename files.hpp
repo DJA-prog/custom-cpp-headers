@@ -1,3 +1,6 @@
+#ifndef files__HPP
+#define files__HPP
+
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -65,6 +68,26 @@ std::vector<std::string> getDirContentList(std::string path)
             std::string filename = (std::string)d->d_name;
             if (filename != "." && filename != "..")
                 files.push_back(filename);
+        }
+        closedir(dr);
+    }
+    else
+        printf("Error Could not open: %s\n", path.c_str());
+    return files;
+}
+
+std::vector<std::string> getDirFilesListOfFormat(std::string path, std::string format)
+{
+    std::vector<std::string> files;
+    dr = opendir(path.c_str());
+    if (dr != NULL)
+    {
+        for (d = readdir(dr); d != NULL; d = readdir(dr))
+        {
+            std::string filename = (std::string)d->d_name;
+            if (filename != "." && filename != ".." && filename.find('.') != 0 && d->d_type == DT_REG)
+                if (filename.substr(filename.rfind('.') + 1, filename.length() - filename.rfind('.') - 1) == format)
+                    files.push_back(filename);
         }
         closedir(dr);
     }
@@ -147,11 +170,42 @@ std::string getFileLastMod(std::string path)
 
 bool file_exists(std::string path)
 {
-    std::ifstream myfile;
-    myfile.open(path);
-    if (myfile)
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == 0 && !(sb.st_mode & S_IFDIR))
         return true;
-    else
-        return false;
+
+    return false;
 }
 
+bool dir_exists(std::string path)
+{
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == 0)
+        return true;
+
+    return false;
+}
+
+int countFilesOf(std::string path, std::string format)
+{
+    size_t filesOfFormat = 0;
+    struct dirent *d;
+    DIR *dr;
+    dr = opendir(path.c_str());
+    if (dr != NULL)
+    {
+        for (d = readdir(dr); d != NULL; d = readdir(dr))
+        {
+            std::string filename = (std::string)d->d_name;
+            if (filename != "." && filename != ".." && filename.find('.') != 0 && d->d_type == DT_REG)
+                if (filename.substr(filename.rfind('.') + 1, filename.length() - filename.rfind('.') - 1) == format)
+                    filesOfFormat++;
+        }
+        closedir(dr);
+    }
+    else
+        std::cout << "\nError Could not open: " << path << std::endl;
+    return filesOfFormat;
+}
+
+#endif

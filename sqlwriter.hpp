@@ -1,3 +1,6 @@
+#ifndef sqlwriter__HPP
+#define sqlwriter__HPP
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -141,3 +144,5 @@ class SQLWriter{ // require: none
         }
 
 };
+
+#endif
