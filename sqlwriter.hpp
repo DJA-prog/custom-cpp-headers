@@ -11,9 +11,9 @@ class SQLWriter{ // require: none
 
     public:
         std::string sqlFile;
-        SQLWriter(std::string sqlFileName, std::string database, std::string* fields, int field_size)
+        SQLWriter(std::string path_to_sql, std::string database, std::string* fields, int field_count)
         {
-            sqlFile = sqlFileName;
+            sqlFile = path_to_sql;
             if (sqlFile.rfind('.') == std::string::npos)
             {
                 sqlFile += ".log";
@@ -34,9 +34,9 @@ class SQLWriter{ // require: none
             if (!sql_file.is_open())
                 std::cout << "Could not create / open sql file: " + sqlFile << std::endl;
             sql_file << "INSERT INTO `" << database << "` (";
-            // int field_size = sizeof(*fields)/sizeof(*(fields + 0));
-            // std::cout << field_size << std::endl;
-            for (size_t i = 0 ; i < field_size; i++)
+            // int field_count = sizeof(*fields)/sizeof(*(fields + 0));
+            // std::cout << field_count << std::endl;
+            for (size_t i = 0 ; i < field_count; i++)
             {
                 if (i == 0)
                 {
@@ -133,14 +133,11 @@ class SQLWriter{ // require: none
 
         bool sql_exists(std::string path)
         {
-            std::fstream myfile;
-            myfile.open(path, std::ios::in);
-            if (myfile.is_open())
-            {
-                myfile.close();
+            struct stat sb;
+            if (stat(path.c_str(), &sb) == 0 && !(sb.st_mode & S_IFDIR))
                 return true;
-            }
-            return false;    
+
+            return false;
         }
 
 };

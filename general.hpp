@@ -27,7 +27,7 @@ std::string exec(std::string command)
     return result;
 }
 
-std::string zeros(std::string value, int digits)
+std::string zeroFill(std::string value, int digits)
 {
     std::string val;
     size_t x = digits - value.length();
@@ -38,7 +38,7 @@ std::string zeros(std::string value, int digits)
     return val;
 }
 
-std::string zeros(int value, int digits)
+std::string zeroFill(int value, int digits)
 {
     std::string val = std::to_string(value);
     size_t x = digits - val.length();

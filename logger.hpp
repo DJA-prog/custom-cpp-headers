@@ -11,9 +11,9 @@ class Logger{ // require: none
 
     public:
         std::string logFile;
-        Logger(std::string logFileName, std::string title)
+        Logger(std::string path_to_log, std::string title)
         {
-            logFile = logFileName;
+            logFile = path_to_log;
             if (logFile.rfind('.') == std::string::npos)
             {
                 logFile += ".log";
@@ -71,34 +71,29 @@ class Logger{ // require: none
 
     private:
         std::string exec(std::string command) {
-        char buffer[128];
-        std::string result = "";
+            char buffer[128];
+            std::string result = "";
 
-        FILE* pipe = popen(command.c_str(), "r");
-        if (!pipe) {
-            return "popen failed!";
-        }
+            FILE* pipe = popen(command.c_str(), "r");
+            if (!pipe)
+                return "popen failed!";
 
-        while (!feof(pipe)) {
-            if (fgets(buffer, 128, pipe) != NULL)
-                result += buffer;
-        }
+            while (!feof(pipe))
+                if (fgets(buffer, 128, pipe) != NULL)
+                    result += buffer;
 
-        pclose(pipe);
-        return result;
+            pclose(pipe);
+            return result;
         }
 
         std::fstream log_file;
         bool log_exists(std::string path)
         {
-            std::fstream myfile;
-            myfile.open(path, std::ios::in);
-            if (myfile.is_open())
-            {
-                myfile.close();
+            struct stat sb;
+            if (stat(path.c_str(), &sb) == 0 && !(sb.st_mode & S_IFDIR))
                 return true;
-            }
-            return false;    
+
+            return false;
         }
 
 };

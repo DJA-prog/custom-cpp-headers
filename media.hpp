@@ -17,7 +17,7 @@ std::string getVideoDuration(std::string path)
     int hours = duration / 3600;
     int minutes = (duration - (hours * 3600)) / 60;
     int seconds = duration % 60;
-    std::string duration_str = zeros(hours, 2) + ':' + zeros(minutes, 2) + ':' + zeros(seconds, 2);
+    std::string duration_str = zeroFill(hours, 2) + ':' + zeroFill(minutes, 2) + ':' + zeroFill(seconds, 2);
     return duration_str;
 }
 

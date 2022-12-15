@@ -186,7 +186,7 @@ bool dir_exists(std::string path)
     return false;
 }
 
-int countFilesOf(std::string path, std::string format)
+int countFilesOfFormat(std::string path, std::string format)
 {
     size_t filesOfFormat = 0;
     struct dirent *d;
