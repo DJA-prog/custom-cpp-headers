@@ -1,109 +1,174 @@
+/*
+
+FIX: prevent duplicate insert
+ADD: emptyConfig flag (check if file is created to add flag and test each time)
+
+*/
+
+
 #ifndef config__HPP
 #define config__HPP
 
+#include <stdio.h>
 #include <string>
 #include <fstream>
-#include <iostream>
 #include <algorithm>
 
 #pragma once
 
-class conf
+class config
 {
-
 public:
-    conf(std::string path_to_conf)
+    // constructor
+    config(std::string path_to_conf)
     {
-        conf_path = path_to_conf;
-        openConf();
+        config_path = path_to_conf;
+        if (!configOpen())
+            printf("Unable to open config file");
+    }
+
+    void stateCheck()
+    {
+        printf("Checking config file state\n");
+        if (confFile.good())
+            printf("Config file is good");
+        if (confFile.bad())
+            printf("Config file is bad");
+        if (confFile.eof())
+            printf("Config file is end of file");
+        if (confFile.fail())
+            printf("Config file failed");
+        printf("\n");
     }
 
     void insert(std::string setting, std::string value)
     {
-        setNewline();
-        conf_file << setting << '=' << value;
+        appendNewLine();
+        confFile << setting << '=' << value;
     }
-    void insert(std::string setting, char &value)
+    void insert(std::string setting, char value)
     {
-        setNewline();
-        conf_file << setting << '=' << value;
+        appendNewLine();
+        confFile << setting << '=' << value;
     }
     void insert(std::string setting, int value)
     {
-        setNewline();
-        conf_file << setting << '=' << value;
+        appendNewLine();
+        confFile << setting << '=' << value;
     }
     void insert(std::string setting, double value)
     {
-        setNewline();
-        conf_file << setting << '=' << value;
+        appendNewLine();
+        confFile << setting << '=' << value;
     }
 
-    void updateSetting(std::string setting_old, std::string setting_new)
+    bool updateSetting(std::string setting_old, std::string setting_new)
     {
-        update(setting_old, setting_new, 1);
+        return update(setting_old, setting_new, 1);
     }
 
-    void updateValue(std::string setting, std::string value)
+    bool updateValue(std::string setting, std::string value)
     {
-        update(setting, value);
+        return update(setting, value, 0);
     }
-    void updateValue(std::string setting, int value)
+
+    bool updateValue(std::string setting, int value)
     {
-        update(setting, std::to_string(value));
+        return update(setting, std::to_string(value), 0);
     }
-    void deleteSetting(std::string setting)
+
+    bool removeSetting(std::string setting)
     {
-        update(setting, "", 3);
+        return update(setting, "", 2);
+    }
+
+    std::string getLineValue(std::string line)
+    {
+        if (line.find('=') != std::string::npos)
+            return line.substr(line.find('=') + 1, line.length() - line.find('=') - 1);
+        return line;
     }
 
     std::string getLine(long long pointer_pos, char delimiter = '\n')
     {
+        if (emptyConfig)
+            return "";
+        // output line
         std::string returnLine;
+
+        // pointer pos in stream
         long long size = 0;
 
         // get length of file
-        conf_file.seekg(0, std::ios::end);
-        size_t len = conf_file.tellg();
+        confFile.seekg(0, std::ios::end); // set pointer position to end of file
+        long long len = confFile.tellg(); // get pointer position
+        
+        // exit when pointer position exceeds file length
+        if (pointer_pos >= len)
+            return "";
 
-        conf_file.seekp(pointer_pos);
-        while (conf_file.get() != delimiter)
-        {
-        }
-        size = (long long)conf_file.tellp() - pointer_pos;
-        conf_file.seekp(pointer_pos);
+        std::cout << "End position: " << len << std::endl;
+
+        // set pointer position to target position
+        confFile.seekp(pointer_pos);
+        // ignore all characters until delimiter or end of file
+        // while (confFile.get() != delimiter);
+        charGetLoop:
+        if (!confFile.eof()) // not end of file
+            if (confFile.get() != delimiter)
+                goto charGetLoop;
+
+        std::cout << "passed delimiter loop" << std::endl;
+        // get length of target string
+        size = (long long)confFile.tellp() - pointer_pos;
+
+        // set pointer position to target position
+        confFile.seekp(pointer_pos);
+
+        // storage
         char line[size];
-        conf_file.get(line, size);
-        for (size_t i = 0; i < size; i++)
+
+        // write characters from pointer position of length (size) characters to char array line
+        confFile.get(line, size);
+
+        // write char array line to string returnLine
+        for (long long i = 0; i < size; i++)
             returnLine += line[i];
-        getLine_pos = (long long)conf_file.tellp() + 1;
-        if (getLine_pos >= len)
-            getLine_pos = -1;
+        
+        // write current pointer position to class variable lineNumber
+        lineNumber = (long long)confFile.tellp() + 1;
+        if (lineNumber >= len)
+            lineNumber = -1;
 
         return returnLine;
     }
 
-    std::string getSettingLine(std::string setting) // return string containing setting
+    std::string getSettingLine(std::string setting)
     {
-        std::string line;
-        getLine_pos = 0;
+        std::string line = "";
+        if (emptyConfig)
+            return line;
 
-        while (getLine_pos != -1)
+        lineNumber = 0;
+
+        while (lineNumber != -1)
         {
-            line = getLine(getLine_pos);
+            line = getLine(lineNumber);
+            printf("%s\n", line.c_str());
             if (line.find(setting.c_str(), 0, line.find('=')) != std::string::npos)
-            {
-                return line;
-            }
+                break;
+            else
+                line = "-1";
         }
-        return "";
+        return line;
     }
 
     std::string getValue(std::string setting)
     {
         std::string line = getSettingLine(setting);
-        std::string value = line.substr(line.find('=') + 1, line.length() - line.find('=') - 2);
-        return value;
+        if (line == "" || line.find('=') != std::string::npos)
+           return line.substr(line.find('=') + 1, line.length() - line.find('=') - 2);
+        return line;
     }
 
     bool getBoolValue(std::string setting)
@@ -112,90 +177,139 @@ public:
         std::transform(booleanValue.begin(), booleanValue.end(), booleanValue.begin(), ::tolower);
         if (booleanValue == "true")
             return true;
-        else
-            return false;
+        return false;
     }
 
-    std::string getLineValue(std::string line)
+    bool setting_exists(std::string setting)
     {
-        std::string value = line.substr(line.find('=') + 1, line.length() - line.find('=') - 2);
-        return value;
+        if (emptyConfig)
+            return false;
+        confFile.seekg(0, confFile.beg);
+
+        std::string line;
+        while (getline(confFile, line)) // getline is fstream native
+            if (line.find(setting) != std::string::npos)
+                return true;
+
+        return false;
     }
 
     void closeConf()
     {
-        conf_file.close();
+        configClose();
     }
 
 private:
-    std::string conf_path;
-    std::fstream conf_file;
-    long long getLine_pos = 0;
+    std::string config_path;
+    std::fstream confFile;
+    long long lineNumber = 0;
+    bool emptyConfig = false;
 
-    void openConf()
+    bool configOpen()
     {
-        conf_file.open(conf_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-        if (!conf_file.is_open())
-            std::cout << "Could not create / open conf file: " + conf_path << std::endl;
+        confFile.open(config_path, std::fstream::in | std::fstream::out | std::fstream::app);
+        if (confFile.peek() == std::ifstream::traits_type::eof())
+            emptyConfig = true;
+        return confFile.is_open();
     }
 
-    void setNewline()
+    void configClose()
     {
-        conf_file.seekg(0, conf_file.end);
-        conf_file.unget();
-        char lastChar = conf_file.get();
-        if (lastChar != '\n')
-            conf_file.put('\n');
+        confFile.close();
     }
 
-    void update(std::string setting, std::string value, int opper = 0) // opper == 0 updateval; opper == 1 updateSet; opper == ? deleteSet
+    void appendNewLine()
     {
-        closeConf();
-
-        std::string line;
-        std::string confTemp_path = "./." + conf_path.substr(conf_path.rfind('/') + 1, conf_path.length() - conf_path.rfind('/') - 1);
-        std::ifstream mainConf(conf_path.c_str());
-        std::ofstream confCopy(confTemp_path.c_str());
-        if (mainConf && confCopy)
+        if (!emptyConfig)
         {
-            std::cout << "Ready to copy" << std::endl;
-            while (getline(mainConf, line))
+            confFile.seekg(0, confFile.end);
+            confFile.unget();
+            if (confFile.get() != '\n')
+                confFile.put('\n');
+        }
+    }
+
+    // opper == 0 updateval; opper == 1 updateSet; opper == 2 deleteSet
+    bool update(std::string setting, std::string value, int opper = 0)
+    {
+        if (opper < 0 || opper > 2)
+        {
+            printf("Opperation out of range");
+            return false;
+        }
+        configClose();
+
+        bool update_success = true;
+        bool update_skip = false;
+        std::string line;
+        std::string configTemp_path = "./." + config_path.substr(config_path.rfind('/') + 1, config_path.length() - config_path.rfind('/') - 1);
+        std::ifstream mainConf(config_path.c_str());
+
+        if (mainConf.is_open())
+            if (opper == 1)
+                while (getline(mainConf, line))
+                    if (line.find(setting) != std::string::npos)
+                        update_skip = true;
+
+        if (!update_skip)
+        {
+            mainConf.seekg(0, confFile.beg);
+            std::ofstream confCopy(configTemp_path.c_str());
+            if (mainConf && confCopy)
             {
-                if (line.find(setting.c_str(), 0, line.find('=')) != std::string::npos)
+                printf("Ready to copy\n");
+
+                while (getline(mainConf, line))
                 {
-                    if (opper == 0)
+                    if (line.find(setting.c_str(), 0, line.find('=')) != std::string::npos)
                     {
-                        std::cout << "setVal: " << setting << '=' << value << '\n';
-                        confCopy << setting << '=' << value << '\n';
-                    }
-                    else if (opper == 1)
-                    {
-                        std::cout << "setSet: " << value << '=' << getLineValue(line) << '\n';
-                        confCopy << value << '=' << getLineValue(line) << '\n';
+                        if (opper == 0)
+                        {
+                            printf("setVal: %s=%s\n", setting.c_str(), value.c_str());
+                            confCopy << setting << '=' << value << '\n';
+                        }
+                        else if (opper == 1)
+                        {
+                            printf("setSett: %s=%s\n", value.c_str(), getLineValue(line).c_str());
+                            confCopy << value << '=' << getLineValue(line) << '\n';
+                        }
+                        else if (opper == 2)
+                        {
+                            printf("delSet: %s=%s\n", setting.c_str(), value.c_str());
+                        }
+                        else
+                        {
+                            printf("Error: Opperation out of bound\n");
+                            confCopy << line << '\n';
+                        }
                     }
                     else
                     {
-                        std::cout << "delSet: " << setting << '=' << value << '\n';
+                        printf("stdCpy: %s\n", line.c_str());
+                        confCopy << line << '\n';
                     }
                 }
-                else
-                {
-                    std::cout << "stdCpy: " << line << '\n';
-                    confCopy << line << '\n';
-                }
+                printf("Done!\n");
             }
-            std::cout << "Copied!" << std::endl;
+            else
+            {
+                printf("Could not open config files: %s; %s", config_path.c_str(), configTemp_path.c_str());
+                update_success = false;
+            }
+            mainConf.close();
+            confCopy.close();
+            remove(config_path.c_str());
+            rename(configTemp_path.c_str(), config_path.c_str());
         }
         else
         {
-            std::cout << "Cannot read file" << std::endl;
+            mainConf.close();
+            printf("Duplicate configuration\n");
+            update_success = false;
         }
-        mainConf.close();
-        confCopy.close();
-        remove(conf_path.c_str());
-        rename(confTemp_path.c_str(), conf_path.c_str());
 
-        openConf();
+        configOpen();
+        return update_success;
     }
 };
 

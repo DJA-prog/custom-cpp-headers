@@ -8,13 +8,13 @@ std::sort(v.begin(), v.end(), doj::alphanum_less<std::string>());
 # config.hpp
 
 ## Libs
+    stdio.h
     string
     fstream
-    iostream
     algorithm
 
-class conf
-    conf(std::string path_to_conf)
+class config
+    config(std::string path_to_conf)
 
 ## PUBLIC PROPERTIES
 
@@ -24,32 +24,36 @@ void insert(std::string setting, char &value)
 void insert(std::string setting, int value)
 void insert(std::string setting, double value)
 
+#### Update existing setting
+void updateSetting(std::string setting_old, std::string setting_new)
+
 #### Update existing configuration
 void updateValue(std::string setting, std::string value)
 void updateValue(std::string setting, int value)
 
 #### Delete existing configuration
-void deleteSetting(std::string setting)
-
-std::string getLine(long long pointer_pos, char delimiter = '\n')
+void removeSetting(std::string setting)
 
 #### Return whole configuration string
 std::string getSettingLine(std::string setting)
+std::string getLine(long long pointer_pos, char delimiter = '\n')
 
 #### Get setting value
 std::string getValue(std::string setting)
 bool getBoolValue(std::string setting)
 
-#### put a setting line in and get value
+#### get value from setting line
 std::string getLineValue(std::string line)
 
 #### Miscellaneous
 void closeConf()
 
 ## PRIVATE PROPERTIES:
-void openConf()
+bool configOpen()
 
-void setNewLine()
+void configClose()
+
+void appendNewLine()
 
 void update(std::string setting, std::string value, int opper = 0)
 opper 0: set value

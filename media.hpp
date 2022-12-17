@@ -34,4 +34,9 @@ int * getVideoDimentions(std::string path)
     return vidDimentions;
 }
 
+// bool is_empty(std::ifstream &pFile)
+// {
+//     return pFile.peek() == std::ifstream::traits_type::eof();
+// }
+
 #endif
