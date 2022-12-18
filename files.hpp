@@ -1,5 +1,5 @@
-#ifndef files__HPP
-#define files__HPP
+#define FILES__HPP
+#ifndef FILES__HPP
 
 #include <stdio.h>
 #include <string>

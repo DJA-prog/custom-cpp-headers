@@ -1,5 +1,5 @@
-#ifndef media__HPP
-#define media__HPP
+#ifndef MEDIA__HPP
+#define MEDIA__HPP
 
 #include <string>
 

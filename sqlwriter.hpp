@@ -1,5 +1,5 @@
-#ifndef sqlwriter__HPP
-#define sqlwriter__HPP
+#ifndef SQLWRITER__HPP
+#define SQLWRITER__HPP
 
 #include <iostream>
 #include <string>

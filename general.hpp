@@ -1,5 +1,5 @@
-#ifndef general__HPP
-#define general__HPP
+#ifndef GENERAL__HPP
+#define GENERAL__HPP
 
 #include <string>
 #include <stdio.h>

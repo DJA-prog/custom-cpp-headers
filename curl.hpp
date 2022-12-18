@@ -1,5 +1,5 @@
-#ifndef curl__HPP
-#define curl__HPP
+#ifndef CURL__HPP
+#define CURL__HPP
 
 #include <string>
 #include <curl/curl.h>
@@ -27,9 +27,9 @@ std::string * curl(std::string url)
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
 
-        return readBuffer;
+        return &readBuffer;
     }
-    return "";
+    return ;
 }
 
 /*

@@ -1,5 +1,5 @@
-#ifndef filters__HPP
-#define filters__HPP
+#ifndef FILTERS__HPP
+#define FILTERS__HPP
 
 #include <cstring>
 #include <string>
