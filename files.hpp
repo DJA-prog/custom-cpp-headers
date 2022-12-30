@@ -1,5 +1,5 @@
-#define FILES__HPP
 #ifndef FILES__HPP
+#define FILES__HPP
 
 #include <stdio.h>
 #include <string>
@@ -11,6 +11,7 @@
 // #include <unistd.h>
 // #include <fcntl.h>
 #include <time.h>
+#include <cmath>
 
 #pragma once
 
@@ -168,6 +169,28 @@ std::string getFileLastMod(std::string path)
     return "-1";
 }
 
+int getDaysLastMod(std::string path)
+{
+    struct stat sb{};
+    struct tm *timeinfo;
+
+    time_t now = time(0);
+    struct tm *currentTime = localtime(&now);
+    int today = currentTime->tm_mday + round((currentTime->tm_mon + 1) * 30.4375) + round((currentTime->tm_year + 1900) * 365.25);
+
+    if (!stat(path.c_str(), &sb))
+    {
+        timeinfo = localtime(&sb.st_mtime);
+        int days = timeinfo->tm_mday + round((timeinfo->tm_mon + 1) * 30.4375) + round((timeinfo->tm_year + 1900) * 365.25);
+
+        return today - days;
+    }
+    else
+        perror("stat");
+
+    return -1;
+}
+
 bool file_exists(std::string path)
 {
     struct stat sb;
@@ -204,7 +227,7 @@ int countFilesOfFormat(std::string path, std::string format)
         closedir(dr);
     }
     else
-        std::cout << "\nError Could not open: " << path << std::endl;
+        printf("Can't open %s\n", path.c_str());
     return filesOfFormat;
 }
 

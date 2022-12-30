@@ -112,7 +112,6 @@ public:
             return line.substr(line.find('=') + 1, line.length() - line.find('=') - 1);
         return line;
     }
-
     std::string getLine(long long pointer_pos, char delimiter = '\n')
     {
         if (emptyConfig)
@@ -167,7 +166,6 @@ public:
 
         return returnLine;
     }
-
     std::string getSettingLine(std::string setting)
     {
         std::string line = "";
@@ -188,7 +186,6 @@ public:
         }
         return line;
     }
-
     std::string getValue(std::string setting)
     {
         if (setting_exists(setting))

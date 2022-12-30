@@ -6,6 +6,8 @@
 
 #pragma once
 
+std::string readBuffer;
+
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     ((std::string *)userp)->append((char *)contents, size * nmemb);
@@ -16,7 +18,6 @@ std::string * curl(std::string url)
 {
     CURL *curl;
     CURLcode res;
-    std::string readBuffer;
 
     curl = curl_easy_init();
     if (curl)
@@ -29,7 +30,7 @@ std::string * curl(std::string url)
 
         return &readBuffer;
     }
-    return ;
+    return &readBuffer;
 }
 
 /*

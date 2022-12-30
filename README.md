@@ -18,6 +18,9 @@ class config
 
 ## PUBLIC PROPERTIES
 
+#### Print config stream state
+stateCheck()
+
 #### Create a configuration
 void insert(std::string setting, std::string value)
 void insert(std::string setting, char &value)
@@ -34,19 +37,25 @@ void updateValue(std::string setting, int value)
 #### Delete existing configuration
 void removeSetting(std::string setting)
 
+#### get value from setting line
+std::string getLineValue(std::string line)
+
 #### Return whole configuration string
-std::string getSettingLine(std::string setting)
 std::string getLine(long long pointer_pos, char delimiter = '\n')
+std::string getSettingLine(std::string setting)
 
 #### Get setting value
 std::string getValue(std::string setting)
 bool getBoolValue(std::string setting)
 
-#### get value from setting line
-std::string getLineValue(std::string line)
-
 #### Miscellaneous
+bool setting_exists(std::string setting)
 void closeConf()
+
+#### Debug
+void setDebug()
+void endDebug()
+bool getDebug()
 
 ## PRIVATE PROPERTIES:
 bool configOpen()
@@ -232,6 +241,9 @@ std::string imgSrc(std::string htmlTag)
 ################################
 
 # curl.hpp [TESTING]
+
+## Compile
+g++ curl_example.cpp -o curl_example -lcurl
 
 ## Libs
     string
