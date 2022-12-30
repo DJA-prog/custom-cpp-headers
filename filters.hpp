@@ -4,8 +4,15 @@
 #include <cstring>
 #include <string>
 #include <algorithm>
+#include <regex>
 
 #pragma once
+
+std::string removeNonNumericCharacters(std::string str)
+{
+    const std::regex pattern("[^0-9]");
+    return regex_replace(str, pattern, "");
+}
 
 std::string fileNameFilter(std::string path)
 {

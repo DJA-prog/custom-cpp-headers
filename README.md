@@ -224,6 +224,9 @@ std::string webSaveFileFilter(std::string path)
 std::string comicTitleFilter(std::string filename)
 std::string comicFilenameFilter(std::string filename)
 
+#### general string filters
+std::string removeNonNumericCharacters(std::string str)
+
 #### convert
 int hexToDec(std::string number)
 
@@ -251,8 +254,42 @@ g++ curl_example.cpp -o curl_example -lcurl
 
 ## Functions
 
-#### used by curl not for user
-static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+#### best use (readBuffer is global variable)
+std::string readBuffer;
+curl(std::string url)
 
 #### insert url to page and get string of result
 std::string * curl(std::string url)
+
+#### used by curl not for user
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+
+
+################################
+
+# timeExt.hpp
+
+## Libs
+  time.h
+  string
+  vector
+
+## Functions
+
+#### get date YYYY-MM-DD
+std::string getDate()
+
+#### get time HH:MM:SS
+std::string getTime()
+
+#### get timestamp "YYYY-MM-DD HH:MM:SS"
+std::string getTimeStamp()
+
+#### seperate timeStamp "YYYY-MM-DD" "HH:MM:SS" (splits string in two by first space)
+std::vector<std::string> seperateTimeStamp(std::string timeStamp)
+
+################################
+
+# CMAKE
+using curl lib: -lcurl
+using mariadb lib: -std=c++11 -lmariadbcpp
