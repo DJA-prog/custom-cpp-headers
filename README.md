@@ -293,3 +293,52 @@ std::vector<std::string> seperateTimeStamp(std::string timeStamp)
 # CMAKE
 using curl lib: -lcurl
 using mariadb lib: -std=c++11 -lmariadbcpp
+
+################################
+
+# curl_wrapper.h
+
+## Compile
+g++ -o main main.cpp -lcurl
+
+## Libs
+    iostream
+    curl/curl.h
+
+class CurlWrapper
+    CurlWrapper()
+
+## PUBLIC PROPERTIES
+
+#### Get url content as string
+std::string fetchUrl(const std::string &url)
+
+
+## PRIVATE PROPERTIES
+
+CURL *curl_;
+static size_t writeCallback(char *ptr, size_t size, size_t nmemb, void *userdata)
+
+################################
+
+# ssh_wrapper.h
+
+## Compile
+g++ -o main main.cpp -lssh
+
+## Libs
+    iostream
+    libssh/libssh.h
+
+class SshWrapper
+    SshWrapper()
+
+## PUBLIC PROPERTIES
+
+bool connect(const std::string &hostname)
+bool auth(const std::string &username, const std::string &password)
+bool runCommand(const std::string &command)
+
+## PRIVATE PROPERTIES
+
+ssh_session session_;
