@@ -44,7 +44,10 @@ std::string fileNameFilter(std::string path)
 std::string webSaveFileFilter(std::string path)
 {
     if (path.rfind("_files") != std::string::npos)
-        return fileNameFilter(path.substr(0, path.rfind(' ')));
+        return fileNameFilter(path.substr(0, path.rfind('_')));
+        
+    if (path.rfind(".html") != std::string::npos)
+	return fileNameFilter(path.substr(0, path.rfind('.')));
 
     return fileNameFilter(path);
 }
@@ -199,6 +202,21 @@ std::string pathinfo(std::string url, int file_info)
 std::string imgSrc(std::string htmlTag)
 {
     return htmlTag.substr(htmlTag.find("src") + 5, (htmlTag.find('"',htmlTag.find("src") + 5)) - (htmlTag.find("src") + 5));
+}
+
+std::string addEscapeCharacters(std::string input)
+{
+    std::string output = "";
+    for (int i = 0; i < input.length(); i++)
+    {
+        char c = input[i];
+        if (c == '\'' || c == '\"' || c == '`')
+        {
+            output += "\\";
+        }
+        output += c;
+    }
+    return output;
 }
 
 #endif

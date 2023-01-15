@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+// YYYY-MM-DD
 std::string getDate()
 {
     std::string month, day;
@@ -26,6 +27,7 @@ std::string getDate()
     return date;
 }
 
+// HH:MM:SS
 std::string getTime()
 {
     std::string hour, minute, second;
@@ -52,6 +54,7 @@ std::string getTime()
     return time;
 }
 
+// YYYY-MM-DD HH:MM:SS
 std::string getTimeStamp() // requires: getDate() getTime()
 {
     return getDate() + ' ' + getTime();

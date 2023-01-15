@@ -49,18 +49,25 @@ std::string zeroFill(int value, int digits)
     return val;
 }
 
-std::string *split(std::string subject, char delimiter = ',')
-{
-    size_t n = std::count(subject.begin(), subject.end(), delimiter);
-    std::string values[n + 1];
-
-    int pos = 0;
-    for (size_t i = 0; i < n + 1; i++)
-    {
-        values[i] = subject.substr(pos, subject.find(delimiter, pos) - pos);
-        pos = subject.find(delimiter, pos) + 1;
+std::string* split(const std::string& subject, char delimiter = ',') {
+    std::string* result = new std::string[subject.size()];
+    int count = 0;
+    std::stringstream ss(subject);
+    std::string token;
+    while (std::getline(ss, token, delimiter)) {
+        result[count] = token;
+        count++;
     }
+    return result;
 }
+
+/*
+std::string* result = split("hello,world,goodbye", ',');
+int size = sizeof(result) / sizeof(result[0]);
+for (int i = 0; i < size; i++) {
+    std::cout << result[i] << std::endl;
+}
+*/
 
 int arraySize(std::string &arr)
 {

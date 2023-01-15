@@ -108,14 +108,16 @@ int getFileSize(std::string path)
     return -1;
 }
 
-int getDirContentSize(std::string path)
+int getDirContentSize(const std::string path)
 {
-    if (path.rfind('/') != path.length() - 1)
-        path += '/';
+    
     int contentSize = 0;
     for (std::string file : getDirContentList(path))
     {
-        contentSize += getFileSize(path + file);
+    	if (path.rfind('/') != path.length() - 1)
+        	contentSize += getFileSize(path + '/' + file);
+        else
+        	contentSize += getFileSize(path + file);
     }
 
     return contentSize;
@@ -200,13 +202,27 @@ bool file_exists(std::string path)
     return false;
 }
 
-bool dir_exists(std::string path)
+bool dir_exists(std::string& path)
 {
     struct stat sb;
     if (stat(path.c_str(), &sb) == 0)
         return true;
 
     return false;
+}
+
+int makeDir(std::string path)
+{
+    if(!dir_exists(path))
+    {
+        int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH); // gives read, write, and execute permissions to the owner, the group and others
+        if (status == 0)
+        	return 0;
+       	else
+       		return status;
+    }
+    else
+        return 1;
 }
 
 int countFilesOfFormat(std::string path, std::string format)
