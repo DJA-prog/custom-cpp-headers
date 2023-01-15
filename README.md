@@ -1,3 +1,5 @@
+### I do not claim ownership of files in the downloaded directory.
+
 # ALPHANUM.hpp
 
 ## Libs
