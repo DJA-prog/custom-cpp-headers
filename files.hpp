@@ -225,6 +225,14 @@ int makeDir(std::string path)
         return 1;
 }
 
+int removeDirInPath(std::string path)
+{
+    std::vector<std::string> dirList = getDirList(path);
+    for (std::string dir : dirList)
+        std::remove((path + "/" + dir).c_str());
+    return 0;
+}
+
 int countFilesOfFormat(std::string path, std::string format)
 {
     size_t filesOfFormat = 0;
