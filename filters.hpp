@@ -87,6 +87,9 @@ std::string comicFilenameFilter(std::string filename)
     filename = webSaveFileFilter(filename);
     std::replace(filename.begin(), filename.end(), '\'', '_');
 
+    if (filename.find("[Eng]"))
+        filename = filename.substr(0, filename.find("[Eng]") - 1) + filename.substr(filename.find("[Eng]") + 5, filename.length() - filename.find("[Eng]") - 5);
+
     return filename;
 }
 

@@ -9,6 +9,7 @@
 
 std::string command = "";
 
+// HH:MM:SS
 std::string getVideoDuration(std::string path)
 {
     command = "ffprobe -i \'" + path + "\' -v quiet -show_entries format=duration -hide_banner -of default=noprint_wrappers=1:nokey=1";
@@ -19,6 +20,12 @@ std::string getVideoDuration(std::string path)
     int seconds = duration % 60;
     std::string duration_str = zeroFill(hours, 2) + ':' + zeroFill(minutes, 2) + ':' + zeroFill(seconds, 2);
     return duration_str;
+}
+
+int getVideoLength(std::string path)
+{
+    command = "ffprobe -i \'" + path + "\' -v quiet -show_entries format=duration -hide_banner -of default=noprint_wrappers=1:nokey=1";
+    return stoi(exec(command));
 }
 
 int * getVideoDimentions(std::string path)
@@ -33,6 +40,13 @@ int * getVideoDimentions(std::string path)
 
     return vidDimentions;
 }
+
+/*
+USAGE:
+    int* videoDim = getVideoDimentions(videoPath);
+    //use the array
+    delete [] videoDim; // free the memory after using
+*/
 
 // bool is_empty(std::ifstream &pFile)
 // {

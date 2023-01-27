@@ -60,13 +60,22 @@ public:
     {
         std::ofstream file(m_filename);
 
-        for (auto &row : data)
+        long rows = data.size();
+        
+
+        for (long i = 0; i < rows; i++)
         {
-            for (auto &cell : row)
+            auto &row = data[i];
+            long cells = row.size();
+            for (long j = 0; j < cells; j++)
             {
-                file << cell << ",";
+                auto &cell = row[j];
+                file << cell;
+                if (j < cells - 1)
+                    file << ',';
             }
-            file << "\n";
+            if (i < rows - 1)
+                file << "\n";
         }
     }
     // Function to update the CSV file
