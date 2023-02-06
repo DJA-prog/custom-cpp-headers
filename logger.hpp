@@ -4,6 +4,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <dirent.h>
+#include <sys/stat.h>
 
 #pragma once
 

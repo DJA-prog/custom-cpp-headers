@@ -17,7 +17,12 @@ it ignores the first row (header)
 class CSV
 {
 public:
-    CSV(std::string filename) : m_filename(filename) {}
+    CSV() {}
+
+    void setFilename(std::string filename)
+    {
+        m_filename = filename;
+    }
 
     void setSkipHeader(bool skip)
     {
@@ -30,7 +35,6 @@ public:
         std::vector<std::vector<std::string>> data;
         std::string line;
         std::ifstream file(m_filename);
-        
 
         while (std::getline(file, line))
         {
@@ -48,7 +52,7 @@ public:
                 hasHeader = false;
                 continue;
             }
-            
+
             data.push_back(row);
         }
 
@@ -62,13 +66,18 @@ public:
 
         for (auto &row : data)
         {
-            for (auto &cell : row)
+            for (unsigned int i = 0; i < row.size(); i++)
             {
-                file << cell << ",";
+                file << row[i];
+                if (i < row.size() - 1)
+                {
+                    file << ",";
+                }
             }
             file << "\n";
         }
     }
+
     // Function to update the CSV file
     void update(int row, int col, std::string value)
     {
@@ -76,6 +85,7 @@ public:
         data[row][col] = value;
         write(data);
     }
+
     // Function to find the CSV file
     void find(std::string value)
     {
