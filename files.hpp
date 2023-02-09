@@ -239,6 +239,13 @@ bool copyFile(const std::string &src_path, const std::string &dst_path)
     return true;
 }
 
+bool moveFile(const std::string &src_path, const std::string &dst_path)
+{
+    if (rename(src_path.c_str(), dst_path.c_str()) == 0)
+        return true;
+    return false;
+}
+
 int countFilesOfFormat(std::string path, std::string format)
 {
     size_t filesOfFormat = 0;
