@@ -201,10 +201,13 @@ public:
 
     bool getBoolValue(std::string setting)
     {
-        std::string booleanValue = getValue(setting);
-        std::transform(booleanValue.begin(), booleanValue.end(), booleanValue.begin(), ::tolower);
-        if (booleanValue == "true")
-            return true;
+        if (setting_exists(setting))
+        {
+            std::string booleanValue = getValue(setting);
+            std::transform(booleanValue.begin(), booleanValue.end(), booleanValue.begin(), ::tolower);
+            if (booleanValue == "true")
+                return true;
+        }
         return false;
     }
 

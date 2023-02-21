@@ -1,4 +1,8 @@
 /*
+// LINUX INSTALLS
+sudo apt-get install libcurl4-openssl-dev
+
+
 // HOW TO COMPILE THIS CODE
 g++ -o main main.cpp curl_wrapper.cpp -lcurl
 */

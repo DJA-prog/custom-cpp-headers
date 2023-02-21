@@ -12,7 +12,6 @@
 // #include <fcntl.h>
 #include <time.h>
 #include <cmath>
-#include <iomanip>
 
 #pragma once
 
@@ -125,57 +124,73 @@ int getDirContentSize(const std::string path)
 }
 
 // YYYY-MM-DD HH:MM:SS
-std::string getFileCreationDate(const std::string &filePath)
-{
-    struct stat attr;
-    if (stat(filePath.c_str(), &attr) == 0)
-    {
-        std::tm *time = std::gmtime(&attr.st_ctime);
-        std::ostringstream ss;
-        ss << std::put_time(time, "%Y-%m-%d %H:%M:%S");
-        return ss.str();
-    }
-    else
-    {
-        throw std::runtime_error("Unable to get file creation date for file " + filePath);
-    }
-}
-
-// YYYY-MM-DD HH:MM:SS
 std::string getFileLastMod(std::string path)
 {
-    struct stat sb;
+    std::string yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr;
+    struct stat sb{};
+    struct tm *timeinfo;
     if (!stat(path.c_str(), &sb))
     {
-        auto *timeinfo = localtime(&sb.st_mtime);
-        std::ostringstream ss;
-        ss << std::put_time(timeinfo, "%Y-%m-%d %H:%M:%S");
-        return ss.str();
+        timeinfo = localtime(&sb.st_mtime);
+        // return asctime(timeinfo);
+        size_t year = timeinfo->tm_year + 1900;
+        yearStr = std::to_string(year);
+        size_t month = timeinfo->tm_mon + 1;
+        if (month < 10)
+            monthStr = '0' + std::to_string(month);
+        else
+            monthStr = std::to_string(month);
+        size_t day = timeinfo->tm_mday;
+        if (day < 10)
+            dayStr = '0' + std::to_string(day);
+        else
+            dayStr = std::to_string(day);
+
+
+        size_t hour = timeinfo->tm_hour;
+        if (hour < 10)
+            hourStr = '0' + std::to_string(hour);
+        else
+            hourStr = std::to_string(hour);
+        size_t minute = timeinfo->tm_min;
+        if (minute < 10)
+            minuteStr = '0' + std::to_string(minute);
+        else
+            minuteStr = std::to_string(minute);
+        size_t second = timeinfo->tm_sec;
+        if (second < 10)
+            secondStr = '0' + std::to_string(second);
+        else
+            secondStr = std::to_string(second);
+
+        return yearStr + '-' + monthStr + '-' + dayStr + ' ' + hourStr + ':' + minuteStr + ':' + secondStr;
     }
     else
-    {
         perror("stat");
-        return "-1";
-    }
+
+    return "-1";
 }
 
 int getDaysLastMod(std::string path)
 {
-    struct stat sb;
+    struct stat sb{};
+    struct tm *timeinfo;
+
+    time_t now = time(0);
+    struct tm *currentTime = localtime(&now);
+    int today = currentTime->tm_mday + round((currentTime->tm_mon + 1) * 30.4375) + round((currentTime->tm_year + 1900) * 365.25);
+
     if (!stat(path.c_str(), &sb))
     {
-        std::time_t now = std::time(nullptr);
-        std::tm *currentTime = std::localtime(&now);
-        std::tm *fileModTime = std::localtime(&sb.st_mtime);
-        auto currentDay = currentTime->tm_mday + currentTime->tm_mon * 30 + currentTime->tm_year * 365;
-        auto fileModDay = fileModTime->tm_mday + fileModTime->tm_mon * 30 + fileModTime->tm_year * 365;
-        return currentDay - fileModDay;
+        timeinfo = localtime(&sb.st_mtime);
+        int days = timeinfo->tm_mday + round((timeinfo->tm_mon + 1) * 30.4375) + round((timeinfo->tm_year + 1900) * 365.25);
+
+        return today - days;
     }
     else
-    {
         perror("stat");
-        return -1;
-    }
+
+    return -1;
 }
 
 bool file_exists(std::string path)
@@ -216,42 +231,6 @@ int removeDirInPath(std::string path)
     for (std::string dir : dirList)
         std::remove((path + "/" + dir).c_str());
     return 0;
-}
-
-// bool remove_directory_recursive(const std::string &dir_path_str)
-// {
-//     std::filesystem::path dir_path(dir_path_str);
-//     try
-//     {
-//         std::filesystem::remove_all(dir_path);
-//         return true;
-//     }
-//     catch (const std::filesystem::filesystem_error &e)
-//     {
-//         std::cerr << e.what() << std::endl;
-//     }
-//     return false;
-// }
-
-bool copyFile(const std::string &src_path, const std::string &dst_path)
-{
-    std::ifstream src(src_path, std::ios::binary);
-    std::ofstream dst(dst_path, std::ios::binary);
-    if (!src.is_open() || !dst.is_open())
-    {
-        return false;
-    }
-    dst << src.rdbuf();
-    src.close();
-    dst.close();
-    return true;
-}
-
-bool moveFile(const std::string &src_path, const std::string &dst_path)
-{
-    if (rename(src_path.c_str(), dst_path.c_str()) == 0)
-        return true;
-    return false;
 }
 
 int countFilesOfFormat(std::string path, std::string format)
