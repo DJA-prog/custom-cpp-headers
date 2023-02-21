@@ -76,31 +76,22 @@ public:
         newLine = true;
     }
 
+    void endSql()
+    {
+        sql_file << ");";
+        sqlEnded = true;
+    }
 
     void sqlClose()
     {
-        // Go to the end of the file
-        sql_file.seekp(-1, std::ios_base::end);
-        // Check the last character
-        char lastChar = sql_file.peek();
-        // If it's a newline character, move back one more position
-        if (lastChar == '\n')
-        {
-            sql_file.seekp(-1, std::ios_base::cur);
-            lastChar = sql_file.peek();
-        }
-        // If it's a comma, replace it with a semicolon
-        if (lastChar == ',')
-        {
-            sql_file.seekp(-1, std::ios_base::cur);
-            sql_file << ';';
-        }
+        if (!sqlEnded)
+            endSql();
         sql_file.close();
     }
 
 private:
     std::string sqlFile;
-    bool newLine = true;
+    bool newLine = true, sqlEnded = false;
     std::fstream sql_file;
     bool sql_exists(std::string path)
     {

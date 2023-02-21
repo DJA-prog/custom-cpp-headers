@@ -8,7 +8,7 @@
 #define PATHINFO_FILENAME 4     // return from last / to end of string
 #define PATHINFO_PARENTDIR 5    // return from last / to second to last /
 
-std::string pathinfo(std::string $path, int $flags = PATHINFO_ALL)
+std::string pathinfo(std::string path, int flags = PATHINFO_ALL)
 {
     int dot_find;
     int path_length = path.length();

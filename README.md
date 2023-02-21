@@ -15,3 +15,13 @@ For a complete overview of the headers and their content refer to the datasheet.
 
 ## Known issues:
 Some headers are using the .hpp extention even though it is a .h header for C.
+
+# Addtional Libs for Linux (required for some libraries)
+## Boost Libs
+$ sudo apt install libboost-all-dev
+
+## Curl lib
+$ sudo apt install libcurlpp-dev
+
+## SSH libs
+$ sudo apt install libssh-dev

@@ -582,6 +582,9 @@ std::fstream sql_file;
 void endSql()
 bool sql_exists(std::string path)
 
+## Known ISSUES
+file does not end on a ; but ,
+
 ################################
 
 # ssh_wrapper.h
