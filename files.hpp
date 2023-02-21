@@ -210,6 +210,14 @@ int makeDir(std::string path)
         return 1;
 }
 
+int removeDirInPath(std::string path)
+{
+    std::vector<std::string> dirList = getDirList(path);
+    for (std::string dir : dirList)
+        std::remove((path + "/" + dir).c_str());
+    return 0;
+}
+
 // bool remove_directory_recursive(const std::string &dir_path_str)
 // {
 //     std::filesystem::path dir_path(dir_path_str);
