@@ -5,6 +5,8 @@
 #include <string>
 #include <algorithm>
 #include <regex>
+#include <sstream>
+#include <vector>
 
 #pragma once
 
@@ -221,5 +223,42 @@ std::string addEscapeCharacters(std::string input)
     }
     return output;
 }
+
+std::string compact_list(const std::vector<float>& nums)
+{
+    std::stringstream ss;
+    std::string result;
+    bool in_range = false;
+    float prev = -1.0;
+    for (float num : nums) {
+        if (prev != -1.0 && num != prev + 1.0) {
+            if (in_range) {
+                ss << prev << ", ";
+                in_range = false;
+            }
+            ss << num << ", ";
+        } else {
+            if (!in_range) {
+                ss << prev << "-";
+                in_range = true;
+            }
+        }
+        prev = num;
+    }
+    if (in_range) {
+        ss << prev;
+    } else {
+        ss.seekp(-2, ss.cur);
+        ss << " ";
+    }
+    result = ss.str();
+    return result;
+}
+
+/*
+Use:
+    std::vector<int> nums = { 236, 237, 238, 239, 240, 243, 244, 245, 246 };
+    std::cout << compact_list(nums) << std::endl; // Output: 236-240, 243-246
+*/
 
 #endif

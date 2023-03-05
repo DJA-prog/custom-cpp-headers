@@ -171,6 +171,7 @@ std::string getFileLastMod(std::string path)
     return "-1";
 }
 
+// returns the number of days since the specified mod date
 int getDaysLastMod(std::string path)
 {
     struct stat sb{};
