@@ -18,6 +18,7 @@
 struct dirent *d;
 DIR *dr;
 
+// Only list files in path
 std::vector<std::string> getFilesList(std::string path)
 {
     std::vector<std::string> files;
@@ -38,6 +39,7 @@ std::vector<std::string> getFilesList(std::string path)
     return files;
 }
 
+// Only list directories in path
 std::vector<std::string> getDirList(std::string path)
 {
     std::vector<std::string> files;
@@ -58,6 +60,7 @@ std::vector<std::string> getDirList(std::string path)
     return files;
 }
 
+// List all files in path
 std::vector<std::string> getDirContentList(std::string path)
 {
     std::vector<std::string> files;
@@ -77,6 +80,7 @@ std::vector<std::string> getDirContentList(std::string path)
     return files;
 }
 
+// List all files in path with given extension
 std::vector<std::string> getDirFilesListOfFormat(std::string path, std::string format)
 {
     std::vector<std::string> files;
@@ -97,6 +101,7 @@ std::vector<std::string> getDirFilesListOfFormat(std::string path, std::string f
     return files;
 }
 
+// return bytes size of file
 int getFileSize(std::string path)
 {
     struct stat sb{};
@@ -108,6 +113,7 @@ int getFileSize(std::string path)
     return -1;
 }
 
+// return bytes size of all files in path
 int getDirContentSize(const std::string path)
 {
     
@@ -194,6 +200,7 @@ int getDaysLastMod(std::string path)
     return -1;
 }
 
+// return true if file exists
 bool file_exists(std::string path)
 {
     struct stat sb;
@@ -203,6 +210,7 @@ bool file_exists(std::string path)
     return false;
 }
 
+// return true if directory exists
 bool dir_exists(std::string& path)
 {
     struct stat sb;
@@ -212,6 +220,7 @@ bool dir_exists(std::string& path)
     return false;
 }
 
+// create directory returns 0 if successful
 int makeDir(std::string path)
 {
     if(!dir_exists(path))
@@ -226,6 +235,7 @@ int makeDir(std::string path)
         return 1;
 }
 
+// remove all directories in path
 int removeDirInPath(std::string path)
 {
     std::vector<std::string> dirList = getDirList(path);
@@ -234,6 +244,7 @@ int removeDirInPath(std::string path)
     return 0;
 }
 
+// count all files in path with the given extension
 int countFilesOfFormat(std::string path, std::string format)
 {
     size_t filesOfFormat = 0;

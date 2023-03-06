@@ -185,7 +185,8 @@ static void sendEmail(const std::string &from, const std::string &to, const std:
 g++ -o main main.cpp curl_wrapper.cpp -lcurl
 
 ## USAGE
-\#include "EmailSender.h"
+
+#include "EmailSender.h"
 
 std::string from = "sender@example.com";
 std::string to = "receiver@example.com";
@@ -213,7 +214,7 @@ static void sendEmail(const std::string &from, const std::string &to, const std:
 g++ -std=c++11 -o myprogram myprogram.cpp -lPocoNet -lPocoFoundation -lPocoUtil
 
 ## USAGE
-\#include "EmailSender_Poco.h"
+#include "EmailSender_Poco.h"
 
 std::string from = "sender@gmail.com";
 std::string to = "receiver@example.com";
@@ -272,6 +273,12 @@ int makeDir(std::string path) // gives read, write, and execute permissions to t
 #### existing
 bool file_exists(std::string path)
 bool dir_exists(std::string path)
+
+#### Create directory
+int makeDir(std::string path)
+
+#### Remove all directories in path
+int removeDirInPath(std::string path)
 
 #### count dir content with format
 int countFilesOfFormat(std::string path, std::string format)
