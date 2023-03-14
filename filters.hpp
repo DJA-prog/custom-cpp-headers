@@ -261,4 +261,18 @@ Use:
     std::cout << compact_list(nums) << std::endl; // Output: 236-240, 243-246
 */
 
+// The unique_values function takes two string vectors v1 and v2, and returns a new vector containing all the unique values in v1 (i.e., values that are not present in v2). 
+std::vector<std::string> unique_values(const std::vector<std::string> &v1, const std::vector<std::string> &v2)
+{
+    std::vector<std::string> result;
+    for (const std::string &s : v1)
+    {
+        if (std::find(v2.begin(), v2.end(), s) == v2.end())
+        {
+            result.push_back(s);
+        }
+    }
+    return result;
+}
+
 #endif

@@ -35,8 +35,8 @@ class Logger{ // require: none
             
             log_file.open(logFile, std::fstream::app);
             if (!log_file.is_open())
-                std::cout << "Could not create / open log file: " + logFile << std::endl;
-            log_file << "Log: " << title << std::endl << "Date: " << exec("date") << std::endl;
+                std::cout << "Could not create / open log file: " + logFile << '\n';
+            log_file << "Log: " << title << "\nDate: " << exec("date") << '\n';
         }
 
         void append(std::string data)
@@ -63,7 +63,7 @@ class Logger{ // require: none
 
         void endLine()
         {
-            log_file << std::endl;
+            log_file << "\n";
         }
 
         void logClose()

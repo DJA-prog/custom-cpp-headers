@@ -235,6 +235,15 @@ int makeDir(std::string path)
         return 1;
 }
 
+// // remove directory with content
+// void remove_directory(const std::string& path)
+// {
+//     if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
+//     {
+//         std::filesystem::remove_all(path);
+//     }
+// }
+
 // remove all directories in path
 int removeDirInPath(std::string path)
 {
