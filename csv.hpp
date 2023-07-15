@@ -1,11 +1,3 @@
-/*
-Ment for small csv files
-
-Note:
-it ignores the first row (header)
-
-*/
-
 #ifndef CSV_HPP
 #define CSV_HPP
 
@@ -13,6 +5,7 @@ it ignores the first row (header)
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <utility> // for std::pair
 
 class CSV
 {
@@ -30,7 +23,6 @@ public:
         std::vector<std::vector<std::string>> data;
         std::string line;
         std::ifstream file(m_filename);
-        
 
         while (std::getline(file, line))
         {
@@ -48,7 +40,7 @@ public:
                 hasHeader = false;
                 continue;
             }
-            
+
             data.push_back(row);
         }
 
@@ -61,7 +53,6 @@ public:
         std::ofstream file(m_filename);
 
         long rows = data.size();
-        
 
         for (long i = 0; i < rows; i++)
         {
@@ -78,6 +69,7 @@ public:
                 file << "\n";
         }
     }
+
     // Function to update the CSV file
     void update(int row, int col, std::string value)
     {
@@ -85,8 +77,9 @@ public:
         data[row][col] = value;
         write(data);
     }
+
     // Function to find the CSV file
-    void find(std::string value)
+    std::pair<int, int> find(std::string value)
     {
         std::vector<std::vector<std::string>> data = read();
         for (unsigned int i = 0; i < data.size(); i++)
@@ -95,12 +88,11 @@ public:
             {
                 if (data[i][j] == value)
                 {
-                    std::cout << "Found at row: " << i << ", col: " << j << std::endl;
-                    return;
+                    return std::make_pair(i, j);
                 }
             }
         }
-        std::cout << "Value not found" << std::endl;
+        return std::make_pair(-1, -1); // Value not found
     }
 
 private:

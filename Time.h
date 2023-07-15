@@ -59,7 +59,12 @@ public:
 
     std::string get_timestamp()
     {
-        return date_str + " " + time_str;
+        return date_str + ' ' + time_str;
+    }
+
+    std::string get_timestamp_dash()
+    {
+        return date_str + '-' + time_str;
     }
 
 private:

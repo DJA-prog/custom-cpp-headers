@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdio.h>
+#include <sstream>
 
 #pragma once
 
@@ -49,7 +50,7 @@ std::string zeroFill(int value, int digits)
     return val;
 }
 
-std::string* split(const std::string& subject, char delimiter = ',') {
+std::string* splitS(const std::string& subject, char delimiter = ',') {
     std::string* result = new std::string[subject.size()];
     int count = 0;
     std::stringstream ss(subject);
@@ -57,6 +58,16 @@ std::string* split(const std::string& subject, char delimiter = ',') {
     while (std::getline(ss, token, delimiter)) {
         result[count] = token;
         count++;
+    }
+    return result;
+}
+
+std::vector<std::string> split(const std::string& subject, char delimiter = ',') {
+    std::vector<std::string> result;
+    std::stringstream ss(subject);
+    std::string token;
+    while (std::getline(ss, token, delimiter)) {
+        result.push_back(token);
     }
     return result;
 }
@@ -80,5 +91,27 @@ int arraySize(std::string &arr)
 // {
 //     return sizeof(arr) / sizeof(arr[0]);
 // }
+
+std::string insert_substring_before_extension(std::string path, std::string sub)
+{
+    // Find the position of the last path separator
+    std::size_t last_separator_pos = path.find_last_of("/\\");
+
+    // Find the position of the last dot in the filename
+    std::size_t dot_pos = path.find_last_of(".");
+
+    // If there is no dot or the dot comes before the last separator, append the substring to the end
+    if (dot_pos == std::string::npos || dot_pos < last_separator_pos)
+    {
+        path.append(sub);
+    }
+    else
+    { // Insert the substring before the extension
+        path.insert(dot_pos, sub);
+    }
+
+    return path;
+}
+
 
 #endif

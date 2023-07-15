@@ -3,6 +3,7 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <ctime>
 
 class ConfigFile
 {
@@ -11,12 +12,13 @@ private:
     std::time_t lastRead;
     std::map<std::string, std::string> settings;
     std::map<std::string, std::map<std::string, std::string>> sections;
+    std::ifstream file; // Declare file as a member variable
 
 public:
     ConfigFile(std::string filename)
     {
         this->filename = filename;
-        std::ifstream file(filename);
+        file.open(filename); // Open the file
         if (file.is_open())
         {
             std::string line;
@@ -41,10 +43,8 @@ public:
 
     ~ConfigFile()
     {
-        if (file.is_open())
-        {
-            file.close();
-        }
+        // No need to check if the file is open here
+        file.close();
     }
 
     bool fileExists(const std::string &filePath)
@@ -148,16 +148,17 @@ public:
         return b;
     }
 
-    bool updateSetting(string section, string key, string value)
+    bool updateSetting(std::string section, std::string key, std::string value)
     {
         if (!sectionExists(section))
             return false;
         sections[section][key] = value;
         save();
         // Check if the file was saved correctly
-        ifstream file(filename);
+        std::ifstream file(filename);
         if (file.good())
         {
+            file.close(); // Close the file
             return true;
         }
         else
@@ -169,16 +170,17 @@ public:
 
     // continued from here
 
-    bool updateSection(string name, map<string, string> values)
+    bool updateSection(std::string name, std::map<std::string, std::string> values)
     {
         if (!sectionExists(name))
             return false;
         sections[name] = values;
         save();
         // Check if the file was saved correctly
-        ifstream file(filename);
+        std::ifstream file(filename);
         if (file.good())
         {
+            file.close(); // Close the file
             return true;
         }
         else
@@ -188,16 +190,17 @@ public:
         }
     }
 
-    bool appendSection(string name, map<string, string> values)
+    bool appendSection(std::string name, std::map<std::string, std::string> values)
     {
         if (sectionExists(name))
             return false;
         sections[name] = values;
         save();
         // Check if the file was saved correctly
-        ifstream file(filename);
+        std::ifstream file(filename);
         if (file.good())
         {
+            file.close(); // Close the file
             return true;
         }
         else
@@ -207,16 +210,17 @@ public:
         }
     }
 
-    bool insertOption(string section, string key, string value)
+    bool insertOption(std::string section, std::string key, std::string value)
     {
         if (!sectionExists(section))
             return false;
         sections[section][key] = value;
         save();
         // Check if the file was saved correctly
-        ifstream file(filename);
+        std::ifstream file(filename);
         if (file.good())
         {
+            file.close(); // Close the file
             return true;
         }
         else
@@ -226,19 +230,19 @@ public:
         }
     }
 
-    void createSection(string sectionName)
+    void createSection(std::string sectionName)
     {
         if (!sectionExists(sectionName))
         {
-            ofstream file(fileName, ios::app);
+            std::ofstream file(filename, std::ios::app);
             if (file.good())
             {
-                file << "[" << sectionName << "]" << endl;
+                file << "[" << sectionName << "]" << std::endl;
                 file.close();
             }
             else
             {
-                cout << "Error creating section " << sectionName << endl;
+                std::cout << "Error creating section " << sectionName << std::endl;
             }
         }
     }
@@ -256,23 +260,28 @@ public:
     //     return false;
     // }
 
-    // Helper function to check if a option exists in a specific section
+    // Helper function to check if an option exists in a specific section
     bool optionExists(std::string sectionName, std::string optionName)
     {
         bool sectionFound = false;
-        for (auto &line : fileContent)
+        file.open(filename); // Open the file
+        if (file.is_open())
         {
-            if (line.find("[" + sectionName + "]") != std::string::npos)
+            std::string line;
+            while (std::getline(file, line))
             {
-                sectionFound = true;
+                if (line.find("[" + sectionName + "]") != std::string::npos)
+                {
+                    sectionFound = true;
+                }
+                else if (sectionFound && line.find(optionName) != std::string::npos)
+                {
+                    file.close(); // Close the file
+                    return true;
+                }
             }
-            else if (sectionFound && line.find(optionName) != std::string::npos)
-            {
-                return true;
-            }
+            file.close(); // Close the file
         }
         return false;
     }
-
-    
-}
+};

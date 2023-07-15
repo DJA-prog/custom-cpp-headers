@@ -16,7 +16,7 @@ g++ -std=c++11 -o myprogram myprogram.cpp -std=c++11 -lboost_system -lpthread
 #include <netdb.h>
 #include <cstring>
 
-std::string get_ip_from_hostname(const std::string &hostname)
+std::string get_ip_from_hostname(const char *hostname)
 {
     addrinfo hints;
     memset(&hints, 0, sizeof hints);
@@ -24,7 +24,7 @@ std::string get_ip_from_hostname(const std::string &hostname)
     hints.ai_socktype = SOCK_STREAM;
 
     addrinfo *res;
-    int status = getaddrinfo(hostname.c_str(), NULL, &hints, &res);
+    int status = getaddrinfo(hostname, NULL, &hints, &res);
     if (status != 0)
     {
         std::cout << "Error: " << gai_strerror(status) << std::endl;

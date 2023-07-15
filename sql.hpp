@@ -6,6 +6,9 @@
 #include <vector>
 #include <stdexcept> // for exceptions
 
+#include "timeExt.hpp"
+#include "files.hpp"
+
 class SQLWriter
 {
 public:
@@ -14,6 +17,8 @@ public:
         sqlFile = sqlFileName;
         if (sql_exists(sqlFile))
             throw std::runtime_error("sql file already exists");
+        
+        std::cout << "SQL file: " << sqlFile << std::endl;
         sql_file.open(sqlFile, std::fstream::out);
         if (!sql_file.is_open())
             throw std::runtime_error("Could not create/open sql file: " + sqlFile);
@@ -95,7 +100,11 @@ private:
     std::fstream sql_file;
     bool sql_exists(std::string path)
     {
-        std::ifstream myfile(path);
+        if (file_exists(path)) {
+            path = insert_substring_before_extension(path, '-'+getTimeStamp_dash());
+        }
+        sqlFile = path;
+        std::ifstream myfile(sqlFile);
         return myfile.good();
     }
 };

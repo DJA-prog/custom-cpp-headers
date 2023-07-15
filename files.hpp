@@ -13,6 +13,10 @@
 #include <time.h>
 #include <cmath>
 
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+
 #pragma once
 
 struct dirent *d;
@@ -130,6 +134,24 @@ int getDirContentSize(const std::string path)
 }
 
 // YYYY-MM-DD HH:MM:SS
+std::string getFileCreationDate(const std::string &filePath)
+{
+    struct stat attrib;
+    if (stat(filePath.c_str(), &attrib) != 0)
+    {
+        return "";
+    }
+    std::stringstream ss;
+    ss << std::setw(4) << std::setfill('0') << gmtime(&attrib.st_mtime)->tm_year + 1900 << "-";
+    ss << std::setw(2) << std::setfill('0') << gmtime(&attrib.st_mtime)->tm_mon + 1 << "-";
+    ss << std::setw(2) << std::setfill('0') << gmtime(&attrib.st_mtime)->tm_mday << " ";
+    ss << std::setw(2) << std::setfill('0') << gmtime(&attrib.st_mtime)->tm_hour << ":";
+    ss << std::setw(2) << std::setfill('0') << gmtime(&attrib.st_mtime)->tm_min << ":";
+    ss << std::setw(2) << std::setfill('0') << gmtime(&attrib.st_mtime)->tm_sec;
+    return ss.str();
+}
+
+// YYYY-MM-DD HH:MM:SS
 std::string getFileLastMod(std::string path)
 {
     std::string yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr;
@@ -200,8 +222,40 @@ int getDaysLastMod(std::string path)
     return -1;
 }
 
+// copy file and returns status
+bool copyFile(const std::string &sourcePath, const std::string &destinationPath)
+{
+    // Open source file for binary input
+    std::ifstream sourceFile(sourcePath, std::ios::binary);
+    if (!sourceFile)
+    {
+        std::cerr << "Failed to open source file: " << sourcePath << std::endl;
+        return false;
+    }
+
+    // Open destination file for binary output
+    std::ofstream destFile(destinationPath, std::ios::binary);
+    if (!destFile)
+    {
+        std::cerr << "Failed to create destination file: " << destinationPath << std::endl;
+        return false;
+    }
+
+    // Copy bytes from source to destination
+    destFile << sourceFile.rdbuf();
+
+    // Check for errors
+    if (!sourceFile.eof() || !destFile)
+    {
+        std::cerr << "Failed to copy file: " << sourcePath << " -> " << destinationPath << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
 // return true if file exists
-bool file_exists(std::string path)
+bool file_exists(std::string &path)
 {
     struct stat sb;
     if (stat(path.c_str(), &sb) == 0 && !(sb.st_mode & S_IFDIR))
@@ -217,6 +271,28 @@ bool dir_exists(std::string& path)
     if (stat(path.c_str(), &sb) == 0)
         return true;
 
+    return false;
+}
+
+// return true if path leads to a directory
+bool is_directory(const std::string &path)
+{
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == 0)
+    {
+        return S_ISDIR(sb.st_mode);
+    }
+    return false;
+}
+
+// return true if path leads to a regular file
+bool is_regular_file(const std::string &path)
+{
+    struct stat sb;
+    if (stat(path.c_str(), &sb) == 0)
+    {
+        return S_ISREG(sb.st_mode);
+    }
     return false;
 }
 
@@ -274,6 +350,16 @@ int countFilesOfFormat(std::string path, std::string format)
     else
         printf("Can't open %s\n", path.c_str());
     return filesOfFormat;
+}
+
+// append / to the end of a path if path leads to a directory
+std::string path_terminator(const std::string &path)
+{
+    if (is_directory(path) && path.back() != '/')
+    {
+        return path + "/";
+    }
+    return path;
 }
 
 #endif

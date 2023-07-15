@@ -1,10 +1,10 @@
-/*
-This code is reading the config file line by line and storing the values in the memory, but it doesn't handle the case when the config file is changed while the program is running. To fix this, you could add a check to re-read the file if it has been modified since the last time it was read.
-*/
-
 #include <iostream>
 #include <fstream>
-#include <time.h>
+#include <ctime>
+#include <map>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 class Config
 {
@@ -54,9 +54,8 @@ public:
     std::string getSetting(std::string key)
     {
         std::time_t currentTime = std::time(nullptr);
-        struct stat attrib;
-        stat(filename.c_str(), &attrib);
-        if (currentTime - lastRead > attrib.st_mtime)
+        std::time_t fileLastModified = fs::last_write_time(filename);
+        if (currentTime - lastRead > fileLastModified)
         {
             readFile();
         }
@@ -66,9 +65,8 @@ public:
     std::map<std::string, std::string> getSection(std::string key)
     {
         std::time_t currentTime = std::time(nullptr);
-        struct stat attrib;
-        stat(filename.c_str(), &attrib);
-        if (currentTime - lastRead > attrib.st_mtime)
+        std::time_t fileLastModified = fs::last_write_time(filename);
+        if (currentTime - lastRead > fileLastModified)
         {
             readFile();
         }
@@ -90,14 +88,14 @@ public:
     void save()
     {
         std::ofstream file(filename);
-        for (const auto &[key, value] : settings)
+        for (const auto& [key, value] : settings)
         {
             file << key << "=" << value << std::endl;
         }
-        for (const auto &[key, value] : sections)
+        for (const auto& [key, value] : sections)
         {
             file << "[" << key << "]" << std::endl;
-            for (const auto &[skey, svalue] : value)
+            for (const auto& [skey, svalue] : value)
             {
                 file << skey << "=" << svalue << std::endl;
             }

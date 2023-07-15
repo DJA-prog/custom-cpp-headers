@@ -275,4 +275,23 @@ std::vector<std::string> unique_values(const std::vector<std::string> &v1, const
     return result;
 }
 
+// remove leading and trailing whitespace
+std::string removeWhitespace(const std::string &str)
+{
+    // Find the first non-whitespace character from the beginning
+    size_t start = str.find_first_not_of(" \t\r\n");
+
+    // If the string is all whitespace, return an empty string
+    if (start == std::string::npos)
+    {
+        return "";
+    }
+
+    // Find the last non-whitespace character from the end
+    size_t end = str.find_last_not_of(" \t\r\n");
+
+    // Extract the trimmed substring
+    return str.substr(start, end - start + 1);
+}
+
 #endif
