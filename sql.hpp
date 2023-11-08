@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdexcept> // for exceptions
 
+#include "general.hpp"
 #include "timeExt.hpp"
 #include "files.hpp"
 
@@ -100,8 +101,8 @@ private:
     std::fstream sql_file;
     bool sql_exists(std::string path)
     {
-        if (file_exists(path)) {
-            path = insert_substring_before_extension(path, '-'+getTimeStamp_dash());
+        if (DevFiles::file_exists(path)) {
+            path = DevGeneral::insert_substring_before_extension(path, '-'+getTimeStamp_dash());
         }
         sqlFile = path;
         std::ifstream myfile(sqlFile);
