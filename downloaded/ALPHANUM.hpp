@@ -307,7 +307,8 @@ namespace doj
        implement "std::ostream operator<< (std::ostream&, const Ty&)".
     */
     template <class Ty>
-    struct alphanum_less : public std::binary_function<Ty, Ty, bool>
+    // struct alphanum_less : public std::binary_function<Ty, Ty, bool> // std::binary_function was deprecated in C++11 and removed in C++17.
+    struct alphanum_less
     {
         bool operator()(const Ty &left, const Ty &right) const
         {

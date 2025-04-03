@@ -27,9 +27,11 @@ namespace DevFilters
     std::vector<std::string> unique_values(const std::vector<std::string> &v1, const std::vector<std::string> &v2);
     std::string removeWhitespace(const std::string &str);
 
-    /*  */
+    /* Integer */
     int hexToDec(std::string number);
     
+    /* Bool */
+    bool isValidURL(const std::string& url);
 
     /* Functions */
 
@@ -359,6 +361,14 @@ namespace DevFilters
 
         // Extract the trimmed substring
         return str.substr(start, end - start + 1);
+    }
+
+    bool isValidURL(const std::string& url) {
+        // Define a regex pattern for a basic URL validation
+        const std::regex urlPattern(R"((http|https):\/\/([\w.-]+)\.([a-z]{2,6})([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)");
+
+        // Use regex_match to validate the URL
+        return std::regex_match(url, urlPattern);
     }
 }
 
